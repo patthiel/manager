@@ -1,6 +1,7 @@
 import { env } from 'process';
 import { login } from '../../utils/login-utils';
 import { loginError } from '../../ui-maps/login-ui-map';
+import { header } from '../../ui-maps/header-ui-map';
 
 describe('Linode Manager - Smoke - Login Suite', () => {
   beforeAll(() => browser.url('/'));
@@ -17,9 +18,9 @@ describe('Linode Manager - Smoke - Login Suite', () => {
 
   it('should successfully login with valid credentials', () => {
     login(env.linodeUser, env.linodePassword);
-    $('.MainHeader-logo').waitForVisible();
-    const headerUsername = $('.MainHeader-username').getText();
-
+    $(header.logo).waitForVisible();
+    
+    const headerUsername = $(header.username).getText();
     expect(headerUsername).toBe(env.linodeUser);
   });
 });

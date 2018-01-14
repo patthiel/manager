@@ -11,6 +11,8 @@ import {
   loginError,
 } from '../ui-maps/login-ui-map';
 
+import { header } from '../ui-maps/header-ui-map';
+
 describe('Linode Manager - Login Suite', () => {
   beforeEach(() => {
     browser.url('/');
@@ -64,6 +66,9 @@ describe('Linode Manager - Login Suite', () => {
 
     login(env.linodeUser, env.linodePassword);
 
-    $('.MainHeader-logo').waitForVisible();
+    $(header.logo).waitForVisible();
+    
+    const headerUsername = $(header.username).getText();
+    expect(headerUsername).toBe(env.linodeUser);
   });
 });

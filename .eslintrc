@@ -3,7 +3,7 @@
     "plugins": [
     "babel",
     "jasmine",
-    "webdriverio"
+    "webdriverio",
   ],
   "env": {
     "browser": true,
