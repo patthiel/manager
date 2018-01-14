@@ -67,7 +67,7 @@ describe('Linode Manager - Login Suite', () => {
     login(env.linodeUser, env.linodePassword);
 
     $(header.logo).waitForVisible();
-    
+
     const headerUsername = $(header.username).getText();
     expect(headerUsername).toBe(env.linodeUser);
   });
