@@ -1,12 +1,16 @@
 {
   "extends": "airbnb",
     "plugins": [
-    "babel"
+    "babel",
+    "jasmine",
+    "webdriverio",
   ],
   "env": {
     "browser": true,
     "mocha": true,
-    "jest": true
+    "jest": true,
+    "jasmine": true,
+    "webdriverio/wdio": true,
   },
   "parser": "babel-eslint",
   "rules": {
