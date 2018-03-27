@@ -1,0 +1,14 @@
+{
+    "extends": "airbnb-base",
+    "plugins": ["webdriverio", "jasmine"],
+	 "env": {
+	  	"es6": true,
+	    "webdriverio/wdio": true,
+	    "jasmine": true
+	  },
+	  "rules": {
+	  	"indent": ["warn", 4],
+	  	"semi": ["warn", "always"],
+	  	"import/prefer-default-export": ["warn"]
+	  }
+}

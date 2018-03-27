@@ -5,7 +5,7 @@ exports.browserConf = {
         acceptSslCerts: true,
         acceptInsecureCerts: true,
         chromeOptions: {
-        }
+        },
     },
     headlessChrome: {
         browserName: 'chrome',
@@ -18,7 +18,7 @@ exports.browserConf = {
                 'window-size=1920x1080','--allow-running-insecure-content',
                 '--ignore-certificate-errors',
             ]
-        }
+        },
     },
     firefox: {
         browserName: 'firefox',
@@ -59,5 +59,5 @@ exports.browserConf = {
         deviceName: 'iPhone 8',
         automationName: 'XCUITest',
         maxInstances: 1
-    }
+    },
 }
