@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { isEmpty } from 'ramda';
 
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 
 import TabbedPanel from '../../../components/TabbedPanel';
 import { Tab } from '../../../components/TabbedPanel/TabbedPanel';
@@ -15,7 +15,8 @@ export interface ExtendedType extends Linode.LinodeType {
 interface Props {
   types: ExtendedType[];
   error?: string;
-  handleSelection: (key: string) => (event: React.MouseEvent<HTMLElement>, value: string) => void;
+  handleSelection: (key: string) =>
+    (event: React.SyntheticEvent<HTMLElement>, value: string) => void;
   selectedID: string | null;
 }
 

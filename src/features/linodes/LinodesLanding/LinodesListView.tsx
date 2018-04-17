@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 import Paper from 'material-ui/Paper';
 import Table from 'material-ui/Table';
 import TableBody from 'material-ui/Table/TableBody';
@@ -9,15 +9,17 @@ import TableHead from 'material-ui/Table/TableHead';
 import TableRow from 'material-ui/Table/TableRow';
 
 import LinodeRow from './LinodeRow';
+import { LinodeConfigSelectionDrawerCallback } from 'src/features/LinodeConfigSelectionDrawer';
 
 interface Props {
-  linodes: (Linode.Linode & { recentEvent?: Linode.Event })[];
+  linodes: Linode.EnhancedLinode[];
   images: Linode.Image[];
   types: Linode.LinodeType[];
+  openConfigDrawer: (c: Linode.Config[], action: LinodeConfigSelectionDrawerCallback) => void;
 }
 
 const LinodesListView: React.StatelessComponent<Props> = (props) => {
-  const { linodes, types } = props;
+  const { linodes, types, openConfigDrawer } = props;
 
   return (
     <Paper>
@@ -27,7 +29,6 @@ const LinodesListView: React.StatelessComponent<Props> = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>Linode</TableCell>
-                <TableCell>Group</TableCell>
                 <TableCell>IP Addresses</TableCell>
                 <TableCell>Region</TableCell>
                 <TableCell></TableCell>
@@ -39,6 +40,7 @@ const LinodesListView: React.StatelessComponent<Props> = (props) => {
                   key={linode.id}
                   linode={linode}
                   type={types.find(type => linode.type === type.id)}
+                  openConfigDrawer={openConfigDrawer}
                 />,
               )}
             </TableBody>

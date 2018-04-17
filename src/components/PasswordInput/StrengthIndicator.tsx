@@ -8,7 +8,7 @@ import  {
   StyleRulesCallback,
   Theme,
 } from 'material-ui';
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 
 interface Props {
   strength: null | 0 | 1 | 2 | 3 | 4;
@@ -44,7 +44,7 @@ type CombinedProps = Props & WithStyles<ClassNames>;
 const StrengthIndicator: React.StatelessComponent<CombinedProps> = (props) => {
   const { classes, strength } = props;
   return (
-    <Grid container spacing={8} className={classes.root}>
+    <Grid container spacing={8} className={classes.root} data-qa-strength={strength}>
       {
         Array
           .from(Array(4), (v, idx) => idx + 1)

@@ -12,15 +12,13 @@ import {
   StyleRules,
   Theme,
 } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 import { ListItem, ListItemText } from 'material-ui/List';
 import LinodeTheme from 'src/theme';
 
 import isPathOneOf from 'src/utilities/routing/isPathOneOf';
-import logoPng from 'src/assets/logo/logo.png';
-import ExpandPanel from 'src/components/ExpandPanel';
-
-import './PrimaryNav.css';
+import Logo from 'src/assets/logo/logo-text.svg';
+import ShowMoreExpansion from 'src/components/ShowMoreExpansion';
 
 type PrimaryLink = {
   display: string,
@@ -43,6 +41,8 @@ const styles = (theme: Theme & Linode.Theme): StyleRules => ({
   headerGrid: {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     minHeight: 64,
+    width: '100%',
+    margin: 0,
     [theme.breakpoints.up('sm')]: {
       minHeight: 72,
     },
@@ -51,23 +51,28 @@ const styles = (theme: Theme & Linode.Theme): StyleRules => ({
     },
   },
   logoItem: {
-    paddingLeft: 40,
+    padding: '10px 0 8px 34px',
   },
   listItem: {
     padding: '16px 40px 16px 34px',
     borderBottomColor: 'rgba(0, 0, 0, 0.12)',
     borderLeft: '6px solid transparent',
+    transition: theme.transitions.create(['background-color', 'border-left-color']),
     '&:hover': {
-      borderLeftColor: 'rgba(0, 0, 0, 0.08)',
+      borderLeftColor: 'rgba(0, 0, 0, 0.1)',
+      '& $linkItem': {
+        color: 'white',
+      },
     },
   },
   linkItem: {
+    transition: theme.transitions.create(['color']),
     color: '#C9CACB',
     fontWeight: 700,
   },
   active: {
     transition: 'border-color .7s ease-in-out',
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     borderLeftColor: LinodeTheme.color.green,
     '&:hover': {
       borderLeftColor: LinodeTheme.color.green,
@@ -77,28 +82,31 @@ const styles = (theme: Theme & Linode.Theme): StyleRules => ({
     color: 'white',
   },
   sublinkPanel: {
-    padding: '16px 40px 0 34px',
+    paddingLeft: theme.spacing.unit * 4,
+    paddingRight: theme.spacing.unit * 4,
     fontSize: '.9rem',
-    transition: 'color .3s ease-in-out',
+    transition: theme.transitions.create(['color', 'background-color']),
+    '&:hover, &:focus': {
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    },
     '& span': {
       color: '#C9CACB',
+      transition: theme.transitions.create(['color']),
     },
     '& svg': {
       color: '#C9CACB',
       fontSize: '20px',
       margin: '5px 2px 4px 0',
+      transition: theme.transitions.create(['color']),
     },
     '&:hover, &:focus, & .hOpen': {
       color: 'white',
       '& span, & svg': {
-        color: 'white',
+        color: 'white !important',
       },
     },
     '& .pOpen': {
       margin: '5px 0 0 14px',
-    },
-    '&:last-child': {
-      paddingBottom: theme.spacing.unit * 3,
     },
   },
   sublink: {
@@ -108,6 +116,7 @@ const styles = (theme: Theme & Linode.Theme): StyleRules => ({
     fontSize: '.8rem',
     '&:hover, &:focus': {
       textDecoration: 'underline',
+      outline: 0,
     },
   },
 });
@@ -182,25 +191,52 @@ class PrimaryNav extends React.Component<Props> {
           alignItems="center"
           spacing={0}
         >
-          <Grid item className={classes.logoItem}>
-            <img width="120" height="48" src={logoPng} />
+          <Grid item>
+            <div className={classes.logoItem}>
+              <Logo width={115} height={43} />
+            </div>
           </Grid>
         </Grid>
         {primaryLinks.map(primaryLink => this.renderPrimaryLink(primaryLink))}
-        <ExpandPanel classes={{ root: classes.sublinkPanel }} name="Account">
-          <Link className={classes.sublink} to="/billing">Account &amp; Billing</Link>
-          <Link className={classes.sublink} to="/users">Users</Link>
-        </ExpandPanel>
-        <ExpandPanel classes={{ root: classes.sublinkPanel }} name="Support">
-          <Link className={classes.sublink} to="/documentation">Documentation</Link>
+        <ShowMoreExpansion classes={{ root: classes.sublinkPanel }} name="Account">
+          <Link
+            className={classes.sublink}
+            to="/billing"
+            role="menuitem"
+          >
+            Account &amp; Billing
+          </Link>
+          <Link
+            className={classes.sublink}
+            to="/users"
+            role="menuitem"
+          >
+            Users
+          </Link>
+        </ShowMoreExpansion>
+        <ShowMoreExpansion classes={{ root: classes.sublinkPanel }} name="Support">
+          <a
+            className={classes.sublink}
+            href="https://www.linode.com/docs"
+            role="menuitem"
+          >
+            Documentation
+          </a>
           <a
             className={classes.sublink}
             href="//www.linode.com/community/questions"
+            role="menuitem"
           >
             Community Forum
           </a>
-          <Link className={classes.sublink} to="/support">Support Tickets</Link>
-        </ExpandPanel>
+          <Link
+            className={classes.sublink}
+            to="/support"
+            role="menuitem"
+          >
+            Support Tickets
+          </Link>
+        </ShowMoreExpansion>
       </React.Fragment>
     );
   }

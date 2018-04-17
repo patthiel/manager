@@ -16,10 +16,10 @@ import {
   values,
 } from 'ramda';
 
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 
 import TabbedPanel from 'src/components/TabbedPanel';
-import ExpandPanel from 'src/components/ExpandPanel';
+import ShowMoreExpansion from 'src/components/ShowMoreExpansion';
 import SelectionCard from 'src/components/SelectionCard';
 
 const distroIcons = {
@@ -38,7 +38,8 @@ interface Props {
   images: Linode.Image[];
   error?: string;
   selectedImageID: string | null;
-  handleSelection: (key: string) => (event: React.MouseEvent<HTMLElement>, value: string) => void;
+  handleSelection: (key: string) =>
+    (event: React.SyntheticEvent<HTMLElement>, value: string) => void;
 }
 
 const sortByVendor = sortBy(prop('vendor'));
@@ -93,7 +94,7 @@ const CreateFromImage: React.StatelessComponent<Props> = (props) => {
           title: 'Public Images',
           render: () => (
             <React.Fragment>
-              <Grid container spacing={8} style={{ marginBottom: 4 }}>
+              <Grid container spacing={8}>
                 {publicImages.length
                 && publicImages.map((image: Linode.Image, idx: number) => (
                   <SelectionCard
@@ -108,7 +109,7 @@ const CreateFromImage: React.StatelessComponent<Props> = (props) => {
                   />
                 ))}
               </Grid>
-              <ExpandPanel name="Show Older Images">
+              <ShowMoreExpansion name="Show Older Images">
                 <Grid container spacing={8} style={{ marginTop: 16 }}>
                   {olderPublicImages.length
                   && olderPublicImages.map((image: Linode.Image, idx: number) => (
@@ -124,7 +125,7 @@ const CreateFromImage: React.StatelessComponent<Props> = (props) => {
                     />
                   ))}
                 </Grid>
-              </ExpandPanel>
+              </ShowMoreExpansion>
             </React.Fragment>
           ),
         },

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import {
   withStyles,
@@ -9,23 +10,27 @@ import {
 import Button from 'material-ui/Button';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 import LinodeTheme from 'src/theme';
 import Typography from 'material-ui/Typography';
+import Tooltip from 'material-ui/Tooltip';
 
-import Tag from 'src/components/Tag';
 import CircleProgress from 'src/components/CircleProgress';
+import { LinodeConfigSelectionDrawerCallback } from 'src/features/LinodeConfigSelectionDrawer';
+import Flag from 'src/assets/icons/flag.svg';
+import { weblishLaunch } from 'src/features/Weblish';
 
 import RegionIndicator from './RegionIndicator';
 import IPAddress from './IPAddress';
 import LinodeActionMenu from './LinodeActionMenu';
 import { rebootLinode } from './powerActions';
 import { typeLabelLong } from '../presentation';
-import transitionStatus from './linodeTransitionStatus';
+import transitionStatus from '../linodeTransitionStatus';
 import LinodeStatusIndicator from './LinodeStatusIndicator';
 
 type CSSClasses =
-  'cardSection'
+  'customeMQ'
+  | 'cardSection'
   | 'flexContainer'
   | 'cardHeader'
   | 'cardContent'
@@ -35,16 +40,27 @@ type CSSClasses =
   | 'button'
   | 'consoleButton'
   | 'rebootButton'
-  | 'loadingStatusText';
+  | 'loadingStatusText'
+  | 'flag';
 
 const styles: StyleRulesCallback<CSSClasses> = (theme: Theme & Linode.Theme) => ({
+  customeMQ: {
+    '@media (min-width: 600px) and (max-width: 680px)': {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2,
+    },
+    '@media (min-width: 1280px) and (max-width: 1400px)': {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2,
+    },
+  },
   cardSection: {
     marginBottom: theme.spacing.unit,
     paddingTop: theme.spacing.unit,
-    paddingLeft: 5,
-    paddingRight: 5,
-    fontSize: '90%',
+    paddingLeft: 3,
+    paddingRight: 3,
     color: LinodeTheme.palette.text.primary,
+    ...theme.typography.caption,
   },
   flexContainer: {
     display: 'flex',
@@ -54,6 +70,7 @@ const styles: StyleRulesCallback<CSSClasses> = (theme: Theme & Linode.Theme) => 
   cardHeader: {
     fontWeight: 700,
     color: 'black',
+    flex: 1,
   },
   cardContent: {
     flex: 1,
@@ -93,12 +110,20 @@ const styles: StyleRulesCallback<CSSClasses> = (theme: Theme & Linode.Theme) => 
     position: 'relative',
     top: - theme.spacing.unit * 2,
   },
+  flag: {
+    transition: theme.transitions.create('opacity'),
+    opaity: 1,
+    '&:hover': {
+      opacity: .75,
+    },
+  },
 });
 
 interface Props {
-  linode: (Linode.Linode & { recentEvent?: Linode.Event });
+  linode: Linode.EnhancedLinode;
   image?: Linode.Image;
   type?: Linode.LinodeType;
+  openConfigDrawer: (configs: Linode.Config[], action: LinodeConfigSelectionDrawerCallback) => void;
 }
 
 class LinodeCard extends React.Component<Props & WithStyles<CSSClasses> > {
@@ -111,8 +136,17 @@ class LinodeCard extends React.Component<Props & WithStyles<CSSClasses> > {
           <LinodeStatusIndicator status={linode.status} />
         </Grid>
         <Grid item className={classes.cardHeader + ' py0'}>
-          {linode.label}
+          <Link to={`/linodes/${linode.id}`}>
+            <Typography variant="subheading">
+              {linode.label}
+            </Typography>
+          </Link>
         </Grid>
+        {linode.notification &&
+          <Grid item className="py0">
+            <Tooltip title={linode.notification}><Flag className={classes.flag} /></Tooltip>
+          </Grid>
+        }
       </Grid>
     );
   }
@@ -120,10 +154,7 @@ class LinodeCard extends React.Component<Props & WithStyles<CSSClasses> > {
 
   loadingState = () => {
     const { linode, classes } = this.props;
-
-    const value = (linode.recentEvent && linode.recentEvent.percent_complete !== null)
-    ? Math.max(linode.recentEvent.percent_complete, 1)
-    : true;
+    const value = (linode.recentEvent && linode.recentEvent.percent_complete) || 1;
 
     return (
       <CardContent className={classes.cardContent}>
@@ -144,13 +175,8 @@ class LinodeCard extends React.Component<Props & WithStyles<CSSClasses> > {
   loadedState = () => {
     const { classes, image, type, linode } = this.props;
 
-    /**
-     * @todo Until tags are implemented we're using the group as a faux tag.
-     * */
-    const tags = [linode.group].filter(Boolean);
-
     return (
-      <CardContent className={classes.cardContent}>
+      <CardContent className={`${classes.cardContent} ${classes.customeMQ}`}>
       <div>
         {image && type &&
         <div className={classes.cardSection}>
@@ -170,36 +196,42 @@ class LinodeCard extends React.Component<Props & WithStyles<CSSClasses> > {
         </div>
         }
       </div>
-      <div className={classes.cardSection}>
-        {tags.map((tag: string, idx) => <Tag key={idx} label={tag} />)}
-      </div>
     </CardContent>
     );
   }
 
   render() {
-    const { classes, linode } = this.props;
+    const { classes, linode, openConfigDrawer } = this.props;
     const loading = transitionStatus.includes(linode.status);
 
     return (
-      <Grid item xs={12} sm={6} lg={4}>
+      <Grid item xs={12} sm={6} lg={4} xl={3}>
         <Card className={classes.flexContainer}>
           <CardHeader
             subheader={this.renderTitle()}
             action={
-              <LinodeActionMenu linode={linode} />
+              <div style={{ position: 'relative', top: 6 }}>
+                <LinodeActionMenu
+                 linode={linode}
+                 openConfigDrawer={openConfigDrawer}
+                />
+              </div>
             }
+            className={classes.customeMQ}
           />
           {<Divider />}
           { loading ? this.loadingState() : this.loadedState() }
           <CardActions className={classes.cardActions}>
-            <Button className={`${classes.button} ${classes.consoleButton}`}>
+            <Button
+              className={`${classes.button} ${classes.consoleButton}`}
+              onClick={() => weblishLaunch(`${linode.id}`)}
+            >
               <span className="btnLink">Launch Console</span>
             </Button>
             <Button
               className={`${classes.button}
               ${classes.rebootButton}`}
-              onClick={() => rebootLinode(`${linode.id}`)}
+              onClick={() => rebootLinode(openConfigDrawer, linode.id, linode.label)}
             >
               <span className="btnLink">Reboot</span>
             </Button>

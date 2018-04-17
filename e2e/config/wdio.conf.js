@@ -1,13 +1,23 @@
-const { getTokenIfNeeded, loadToken } = require('../utils/common');
+require('dotenv').config();
+
+const { argv } = require('yargs');
+const { getTokenIfNeeded, loadToken, login } = require('../utils/common');
 const { browserCommands } = require('./custom-commands');
+const { browserConf } = require('./browser-config');
+const selectedBrowser = argv.b ? browserConf[argv.b] : browserConf['chrome'];
+const username = process.env.MANAGER_USER;
+const password = process.env.MANAGER_PASS;
+const specsToRun = argv.file ? [ argv.file ] : ['./e2e/specs/**/*.js'];
+const selectedReporters = ['dot'];
 
-// Get username and password from env variables
-const username = process.env.username;
-const password = process.env.pass;
-
+if (argv.log) {
+    selectedReporters.push('junit');
+}
 
 exports.config = {
-    
+    // Selenium Host/Port
+    host: process.env.DOCKER ? 'selenium-hub' : 'localhost',
+    port: 4444,
     //
     // ==================
     // Specify Test Files
@@ -17,9 +27,8 @@ exports.config = {
     // NPM script (see https://docs.npmjs.com/cli/run-script) then the current working
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
-    specs: [
-        './e2e/specs/**/*.js'
-    ],
+    specs:
+        specsToRun,
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
@@ -40,20 +49,13 @@ exports.config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 2,
+    maxInstances: 1,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://docs.saucelabs.com/reference/platforms-configurator
     //
-    capabilities: [{
-        // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-        // grid with only 5 firefox instances available you can make sure that not more than
-        // 5 instances get started at a time.
-        maxInstances: 2,
-        //
-        browserName: 'chrome'
-    }],
+    capabilities: [selectedBrowser],
     //
     // ===================
     // Test Configurations
@@ -79,13 +81,13 @@ exports.config = {
     bail: 0,
     //
     // Saves a screenshot to a given path if a command fails.
-    // screenshotPath: './errorShots/',
+    // screenshotPath: './e2e/errorShots/',
     //
     // Set a base URL in order to shorten url command calls. If your `url` parameter starts
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    baseUrl: 'http://localhost:3000',
+    baseUrl: process.env.DOCKER ? 'https://manager-local:3000' : 'http://localhost:3000',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
@@ -131,7 +133,12 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: http://webdriver.io/guide/reporters/dot.html
-    reporters: ['dot'],
+    reporters: selectedReporters,
+    reporterOptions: {
+        junit: {
+            outputDir: './e2e/test-results'
+        }
+    },
     
     //
     // Options to be passed to Jasmine.
@@ -179,12 +186,17 @@ exports.config = {
      * @param {Array.<String>} specs List of spec file paths that are to be run
      */
     before: function (capabilities, specs) {
-        // Require Babel-Register to use ES6 in jasmine specs
-        require('babel-register');
-
         // Load up our custom commands
+        require('babel-register');
         browserCommands();
-        getTokenIfNeeded(username, password);
+        browser.timeouts('page load', 20000);
+        login(username, password);
+        // getTokenIfNeeded(username, password);
+        // loadToken();
+
+        // Click beta notice button
+        browser.waitForVisible('[data-qa-beta-notice]');
+        browser.click('[data-qa-beta-notice] button');
     },
     /**
      * Runs before a WebdriverIO command gets executed.
@@ -199,8 +211,6 @@ exports.config = {
      * @param {Object} suite suite details
      */
     beforeSuite: function (suite) {
-        // Load our token into localStorage before the suite starts
-        loadToken();
     },
     /**
      * Function to be executed before a test (in Mocha/Jasmine) or a step (in Cucumber) starts.

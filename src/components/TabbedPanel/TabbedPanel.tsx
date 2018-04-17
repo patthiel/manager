@@ -18,7 +18,6 @@ const styles: StyleRulesCallback<ClassNames> = (theme: Theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
     backgroundColor: theme.palette.background.paper,
   },
   inner: {
@@ -33,7 +32,7 @@ const styles: StyleRulesCallback<ClassNames> = (theme: Theme) => ({
     margin: `${theme.spacing.unit}px 0`,
   },
   panelBody: {
-    padding: `${theme.spacing.unit * 3}px 0 0`,
+    padding: `${theme.spacing.unit * 2}px 0 0`,
   },
 });
 
@@ -65,11 +64,12 @@ class TabbedPanel extends React.Component<CombinedProps> {
     const render = tabs[value].render;
 
     return (
-      <Paper className={classes.root}>
+      <Paper className={classes.root} data-qa-tp={header}>
         <div className={classes.inner}>
           { error && <Notice text={error} error /> }
-          <Typography variant="title">{header}</Typography>
-          {copy && <Typography component="div" className={classes.copy}>{copy}</Typography>}
+          <Typography variant="title" data-qa-tp-title>{header}</Typography>
+            {copy && <Typography component="div" className={classes.copy}
+            data-qa-tp-copy>{copy}</Typography>}
           <AppBar position="static" color="default">
             <Tabs
               value={value}
@@ -78,10 +78,10 @@ class TabbedPanel extends React.Component<CombinedProps> {
               textColor="primary"
               className={classes.tabs}
             >
-            { tabs.map((tab, idx) => <Tab key={idx} label={tab.title} />) }
+            { tabs.map((tab, idx) => <Tab key={idx} label={tab.title} data-qa-tab={tab.title} />) }
             </Tabs>
           </AppBar>
-          <Typography component="div" className={classes.panelBody}>
+          <Typography component="div" className={classes.panelBody} data-qa-tab-body>
               { render(rest) }
           </Typography>
         </div>

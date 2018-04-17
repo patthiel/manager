@@ -1,5 +1,6 @@
+const moment = require('moment');
+const { existsSync, statSync, writeFileSync } = require('fs');
 const { constants } = require('../constants');
-const { existsSync, writeFileSync, statSync } = require('fs');
 
 /*
 * Navigates to baseUrl, inputs username and password
@@ -25,10 +26,17 @@ exports.login = (username, password) => {
 * @returns { String } stringified local storage object
 */
 exports.getTokenIfNeeded = (user, pass) => {
+    let expirationTime, currentTime;
     const tokenPath = './localStorage.json';
     const tokenExists = existsSync(tokenPath);
-    const expirationDate = new Date().getHours() + 2 // Current Time + 2 hours;
-    const getNewToken = tokenExists ? new Date(statSync(tokenPath).mtime).getHours() > expirationDate: true;
+
+    if (tokenExists)  {
+        const lastModifiedTime = new Date(statSync(tokenPath).mtime);
+        expirationTime = moment(lastModifiedTime).add('2', 'hours').format();
+        currentTime = moment().format();
+    }
+    
+    const getNewToken = tokenExists ? expirationTime < currentTime : true;
 
     if (getNewToken) {
         exports.login(user, pass);
@@ -50,17 +58,31 @@ exports.getTokenIfNeeded = (user, pass) => {
 */
 exports.loadToken = () => {
     const tokenPath = '../../localStorage.json';
-    const localStorageObj = require(tokenPath);
-    const keys = Object.keys(localStorageObj);
+    try {
+        const localStorageObj = require(tokenPath);
+        const keys = Object.keys(localStorageObj);
 
-    const storageObj = keys.map(key => {
-        return { [key]: localStorageObj[key] }
-    });
-    browser.url('/null');
-    browser.execute(function(storageObj) {
-        storageObj.forEach(item => {
-            localStorage.setItem(Object.keys(item)[0], Object.values(item)[0]);
+        const storageObj = keys.map(key => {
+            return { [key]: localStorageObj[key] }
         });
-    }, storageObj);
-    browser.url(constants.routes.dashboard);
+
+        browser.url('/null');
+        browser.waitForText('#root > span:nth-child(1)');
+        browser.waitUntil(function() {
+            browser.execute(function(storageObj) {
+                storageObj.forEach(item => {
+                    localStorage.setItem(Object.keys(item)[0], Object.values(item)[0]);
+                });
+            }, storageObj);
+            browser.url('/null');
+            return browser.execute(function(storageObj) {
+                return localStorage.getItem('authentication/oauth-token').includes(storageObj['authentication/oauth-token']) === true;
+            }, storageObj);
+        }, 10000);
+        browser.url(constants.routes.dashboard);
+        browser.waitForVisible('[data-qa-beta-notice]');
+        browser.click('[data-qa-beta-notice] button');
+    } catch (err) {
+        console.log(`${err} \n ensure that your local manager environment is running!`);
+    }
 }

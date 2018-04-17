@@ -14,7 +14,7 @@ const flags = {
   de: () => <DE width="32" height="24" viewBox="0 0 720 480"/>,
 };
 
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 
 import TabbedPanel from '../../../components/TabbedPanel';
 import { Tab } from '../../../components/TabbedPanel/TabbedPanel';
@@ -27,7 +27,8 @@ export interface ExtendedRegion extends Linode.Region {
 interface Props {
   regions: ExtendedRegion[];
   error?: string;
-  handleSelection: (key: string) => (event: React.MouseEvent<HTMLElement>, value: string) => void;
+  handleSelection: (key: string) =>
+    (event: React.SyntheticEvent<HTMLElement>, value: string) => void;
   selectedID: string | null;
 }
 

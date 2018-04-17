@@ -6,7 +6,7 @@ import {
   WithStyles,
 } from 'material-ui';
 import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 
 import ErrorOutline from 'material-ui-icons/ErrorOutline';
 
@@ -39,9 +39,9 @@ const ErrorState = (props: Props & WithStyles<CSSClasses>) => {
     >
       <Grid item>
         <div className={props.classes.iconContainer}>
-          <ErrorOutline className={props.classes.icon}/>
+          <ErrorOutline className={props.classes.icon} data-qa-error-icon/>
         </div>
-        <Typography variant="subheading">
+        <Typography variant="subheading" data-qa-error-msg>
           {props.errorText}
         </Typography>
       </Grid>

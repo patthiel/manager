@@ -12,12 +12,12 @@ import {
   Theme,
   StyleRules,
 } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
+import Grid from 'src/components/Grid';
 import Typography from 'material-ui/Typography';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 
-import { API_ROOT } from 'src/constants';
+import { API_ROOT, dcDisplayNames } from 'src/constants';
 
 import PromiseLoader from 'src/components/PromiseLoader';
 import SelectImagePanel from './SelectImagePanel';
@@ -29,9 +29,11 @@ import AddonsPanel from './AddonsPanel';
 import { typeLabelDetails, typeLabel } from '../presentation';
 import CheckoutBar from './CheckoutBar';
 import { resetEventsPolling } from 'src/events';
+
 type ChangeEvents = React.MouseEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>;
 
 type Info = { name: string, details: string } | undefined;
+
 export type TypeInfo = {
   name: string,
   details: string,
@@ -64,11 +66,6 @@ interface PreloadedProps {
 
 type CombinedProps = Props & WithStyles<Styles> & PreloadedProps & RouteComponentProps<{}>;
 
-interface ApiFieldError {
-  field: string;
-  reason: string;
-}
-
 interface State {
   selectedTab: number;
   selectedImageID: string | null;
@@ -78,7 +75,7 @@ interface State {
   password: string | null;
   backups: boolean;
   privateIP: boolean;
-  errors?: ApiFieldError[];
+  errors?: Linode.ApiFieldError[];
   [index: string]: any;
 }
 
@@ -114,21 +111,9 @@ const preloaded = PromiseLoader<Props>({
   regions: () => Axios.get(`${API_ROOT}/regions`)
     .then(response => response.data)
     .then((response) => {
-      const display = {
-        'us-east-1a': 'Newark, NJ',
-        'us-south-1a': 'Dallas, TX',
-        'us-west-1a': 'Fremont, CA',
-        'us-southeast-1a': 'Atlanta, GA',
-        'eu-central-1a': 'Frankfurt, DE',
-        'eu-west-1a': 'London, UK',
-        'ap-northeast-1a': 'Tokyo',
-        'ap-northeast-1b': 'Tokyo 2, JP',
-        'ap-south-1a': 'Singapore, SG',
-      };
-
       return response.data.map((region: Linode.Region) => ({
         ...region,
-        display: display[region.id],
+        display: dcDisplayNames[region.id],
       })) || [];
     }),
 });
@@ -140,7 +125,7 @@ const errorResources = {
   root_pass: 'A root password',
 };
 
-const getErrorFor = (field: string, arr: ApiFieldError[] = []): undefined | string => {
+const getErrorFor = (field: string, arr: Linode.ApiFieldError[] = []): undefined | string => {
   const err = arr.find(e => e.field === field);
   if (!err) {
     return;
@@ -301,7 +286,9 @@ class LinodeCreate extends React.Component<CombinedProps, State> {
       <StickyContainer>
         <Grid container>
           <Grid item className={`${classes.main} mlMain`}>
-            <Typography variant="headline">Create New Linode</Typography>
+            <Typography variant="headline" data-qa-create-linode-header>
+              Create New Linode
+            </Typography>
             <AppBar position="static" color="default">
               <Tabs
                 value={selectedTab}
