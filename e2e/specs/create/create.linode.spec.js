@@ -1,5 +1,6 @@
-const { constants } = require('../../constants');
 import Create from '../../pageobjects/create';
+
+const { constants } = require('../../constants');
 
 describe('Create - Menu Suite', () => {
     beforeEach(() => {

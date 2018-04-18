@@ -90,6 +90,7 @@
     "build-storybook": "build-storybook",
     "selenium": "./node_modules/.bin/selenium-standalone install --config=./e2e/config/selenium-config.js && ./node_modules/.bin/selenium-standalone start --config=./e2e/config/selenium-config.js",
     "e2e": "./node_modules/.bin/wdio ./e2e/config/wdio.conf.js",
+    "e2e:lint": "./node_modules/.bin/eslint -c ./.eslintrc.json ./e2e/specs/**/*.js ./e2e/pageobjects/**/*.js ./e2e/utils/**/*.js ./e2e/constants.js",
     "e2e:all": "./node_modules/.bin/wdio ./e2e/config/wdio.conf.js; ./node_modules/.bin/wdio ./e2e/config/wdio.storybook.conf.js"
   },
   "pre-commit": [

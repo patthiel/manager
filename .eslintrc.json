@@ -9,6 +9,9 @@
 	  "rules": {
 	  	"indent": ["warn", 4],
 	  	"semi": ["warn", "always"],
-	  	"import/prefer-default-export": ["warn"]
+	  	"import/prefer-default-export": ["warn"],
+	  	"space-before-function-paren": ["error", "never"],
+	  	"prefer-arrow-callback": "off",
+	  	"one-var": "off"
 	  }
 }

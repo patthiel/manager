@@ -1,5 +1,6 @@
-const { constants} = require('../../constants');
-import { Profile, OauthCreateDrawer, dialogMap} from '../../pageobjects/profile';
+import { Profile, OauthCreateDrawer, dialogMap } from '../../pageobjects/profile';
+
+const { constants } = require('../../constants');
 
 const profile = new Profile();
 const createDrawer = new OauthCreateDrawer();
@@ -73,7 +74,7 @@ describe('Profile - OAuth Clients Suite', () => {
 
     describe('OAuth Clients - Edit', () => {
         it('should display the edit drawer', () => {
-            profile.selectActionMenu(client.label, "Edit");
+            profile.selectActionMenu(client.label, 'Edit');
             createDrawer.label.waitForVisible();
 
             expect(createDrawer.label.isVisible()).toBe(true);
@@ -146,22 +147,23 @@ describe('Profile - OAuth Clients Suite', () => {
     });
 
     describe('OAuth Clients - Delete', () => {
-        let deleteButton, cancelButton;
+        let deleteButton,
+            cancelButton;
 
         beforeAll(() => {
-            browser.refresh()
+            browser.refresh();
             profile.oauthLabel.waitForVisible();
         });
 
         it('should display delete dialog', () => {
-            profile.selectActionMenu(editedClient.label, "Delete");
+            profile.selectActionMenu(editedClient.label, 'Delete');
             browser.waitForVisible(dialogTitle);
-            
+
             const deleteMsg = 'Are you sure you want to permanently delete this OAuth client?';
-            const dialogMsg  = $(dialogContent).getText();
+            const dialogMsg = $(dialogContent).getText();
             deleteButton = $(dialogConfirm);
             cancelButton = $(dialogCancel);
-            
+
             expect(dialogMsg).toContain(deleteMsg);
             expect(deleteButton.isVisible()).toBe(true);
             expect(cancelButton.isVisible()).toBe(true);

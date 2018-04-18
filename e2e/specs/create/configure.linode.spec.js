@@ -1,4 +1,3 @@
-const { constants } = require('../../constants');
 import Create from '../../pageobjects/create';
 import ConfigureLinode from '../../pageobjects/configure-linode';
 import CheckoutSummary from '../../pageobjects/checkout-summary';
@@ -15,7 +14,7 @@ describe('Create Linode - Configure Linode Suite', () => {
 
     it('should update cost summary on plan selection', () => {
         browser.waitForVisible('[data-qa-tp="Linode Plan"] [data-qa-selection-card]');
-        ConfigureLinode.plans.forEach(p => {
+        ConfigureLinode.plans.forEach((p) => {
             const originalPrice = CheckoutSummary.costSummary.getText();
             p.click();
             const updatedPrice = CheckoutSummary.costSummary.getText();
@@ -38,7 +37,7 @@ describe('Create Linode - Configure Linode Suite', () => {
 
     it('should display three regions and have locations available in each', () => {
         const regions = ConfigureLinode.regionTabs;
-        regions.forEach(r => {
+        regions.forEach((r) => {
             r.click();
             browser.waitUntil(function() {
                 return r.getAttribute('aria-selected').includes('true');

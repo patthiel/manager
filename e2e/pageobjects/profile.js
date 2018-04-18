@@ -95,6 +95,7 @@ export class TokenCreateDrawer {
         const elem = row.$(permission.selector);
         elem.click();
         expect(elem.getAttribute('class').includes('checked')).toBe(true);
+        return this;
     }
 
 }

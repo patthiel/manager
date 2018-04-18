@@ -18,4 +18,5 @@ module.exports = {
       arch: process.arch,
       baseURL: 'https://github.com/mozilla/geckodriver/releases/download'
     }
+  }
 }

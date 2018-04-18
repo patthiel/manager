@@ -1,5 +1,6 @@
-const { constants} = require('../../constants');
 import { Profile, TokenCreateDrawer, dialogMap } from '../../pageobjects/profile';
+
+const { constants} = require('../../constants');
 
 const profile = new Profile();
 const tokenCreateDrawer = new TokenCreateDrawer();
@@ -22,7 +23,7 @@ describe('View - Personal Access Tokens', () => {
     });
 
     describe('Create - Personal Access Tokens', () => {
-       it('should display create drawer on create', () => {
+        it('should display create drawer on create', () => {
             profile.create('token');
             tokenCreateDrawer.baseElemsDisplay();
             tokenCreateDrawer.labelTimestamp(timestamp);
@@ -35,11 +36,12 @@ describe('View - Personal Access Tokens', () => {
         });
 
         it('should set basic scopes', () => {
-            tokenCreateDrawer.setPermission(tokenCreateDrawer.account, tokenCreateDrawer.readPermission);
-            tokenCreateDrawer.setPermission(tokenCreateDrawer.domain, tokenCreateDrawer.nonePermission);
-            tokenCreateDrawer.setPermission(tokenCreateDrawer.events, tokenCreateDrawer.rwPermission);
-            tokenCreateDrawer.setPermission(tokenCreateDrawer.account, tokenCreateDrawer.rwPermission);
-            tokenCreateDrawer.setPermission(tokenCreateDrawer.images, tokenCreateDrawer.rwPermission);
+            tokenCreateDrawer
+                .setPermission(tokenCreateDrawer.account, tokenCreateDrawer.readPermission)
+                .setPermission(tokenCreateDrawer.domain, tokenCreateDrawer.nonePermission)
+                .setPermission(tokenCreateDrawer.events,tokenCreateDrawer.rwPermission)
+                .setPermission(tokenCreateDrawer.account, tokenCreateDrawer.rwPermission)
+                .setPermission(tokenCreateDrawer.images, tokenCreateDrawer.rwPermission);
         });
 
         it('should successfully create personal access token on submit', () => {
@@ -59,7 +61,6 @@ describe('View - Personal Access Tokens', () => {
             expect(browser.waitForVisible(newToken)).toBe(true);
             expect(browser.getText(`${newToken} [data-qa-token-expiry]`)).toBe(expectedExpiration);
             expect($(`${newToken} [data-qa-token-type]`).getText()).toBe('Personal Access Token');
-
         });
 
         it('should display tokens', () => {
@@ -90,7 +91,7 @@ describe('View - Personal Access Tokens', () => {
             it('should display edit drawer', () => {
                 browser.jsClick(`${newToken} [data-qa-action-menu]`);
                 browser.click('[data-qa-action-menu-item="Edit"]');
-                
+
                 expect(tokenCreateDrawer.label.waitForVisible()).toBe(true);
                 expect(tokenCreateDrawer.title.getText()).toBe('Edit this Personal Access Token');
                 expect(tokenCreateDrawer.submit.isVisible()).toBe(true);
