@@ -1,4 +1,4 @@
-import initStoryshots, { imageSnapshot } from '@storybook/addon-storyshots';
+const { initStoryshots, imageSnapshot } = require('@storybook/addon-storyshots');
 
 const getMatchOptions = ({context : {kind, story}, url}) => {
   return {
