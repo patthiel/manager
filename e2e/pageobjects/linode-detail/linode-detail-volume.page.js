@@ -1,4 +1,4 @@
-import Page from './page';
+import Page from '../page';
 
 export class VolumeDetail extends Page {
     get drawerTitle() { return $('[data-qa-drawer-title]'); }
@@ -190,7 +190,7 @@ export class VolumeDetail extends Page {
     }
 
     removeVolume(volumeElement) {
-        if (volumeElement.$('[data-qa-volume-cell-attachment]').getText() !== '') {
+        if (volumeElement.$('[data-qa-volume-cell-attachment]').isVisible() && volumeElement.$('[data-qa-volume-cell-attachment]').getText() !== '') {
             volumeElement.$('[data-qa-action-menu]').click();
             browser.waitForVisible('[data-qa-action-menu-item="Detach"]');
             browser.jsClick('[data-qa-action-menu-item="Detach"]');
@@ -227,11 +227,6 @@ export class VolumeDetail extends Page {
         browser.waitUntil(function(volumeElement) {
             return $$('[data-qa-volume-cell]').length === (numberOfVolumes-1)
         }, 30000, 'Volume failed to be removed');
-    }
-
-    selectActionMenuItem(volume, item) {
-        volume.$(this.volumeActionMenu.selector).click();
-        browser.jsClick(`[data-qa-action-menu-item="${item}"]`);
     }
 
     assertVolumeInTable(volume) {
