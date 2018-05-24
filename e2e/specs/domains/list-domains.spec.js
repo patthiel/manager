@@ -60,18 +60,14 @@ describe('List Domains Suite', () => {
         ListDomains.selectActionMenuItem($(domainElement), 'Clone');
         ListDomains.cloneDrawerElemsDisplay();
 
-        // Hit escape to get rid of action menu
-        // Refactor once Chrome implements actions api
-        browser.keys('\uE00C');
-        ListDomains.drawerTitle.waitForVisible(5000, true);
+        ListDomains.closeDrawer();
     });
 
     it('should fail to clone with the same domain name', () => {
             ListDomains.selectActionMenuItem($(domainElement), 'Clone');
             ListDomains.clone(initialDomain);
             ListDomains.cloneDomainName.$('p').waitForVisible();
-            ListDomains.cancel.click();
-            ListDomains.drawerTitle.waitForVisible(5000, true);
+            ListDomains.closeDrawer();
     });
 
     it('should clone domain', () => {
