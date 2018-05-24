@@ -84,6 +84,7 @@ describe('List Domains Suite', () => {
     afterAll(() => {
         ListDomains.domains
             .forEach(d => {
+                ListDomains.drawerTitle.waitForExist(5000, true);
                 ListDomains.selectActionMenuItem(d, 'Remove');
                 ListDomains.remove(d, d.$(ListDomains.label.selector).getText());
             });

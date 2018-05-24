@@ -88,6 +88,7 @@ class ListDomains extends Page {
 
     cloneDrawerElemsDisplay() {
         this.drawerTitle.waitForVisible();
+        this.drawerClose.waitForVisible();
         expect(this.drawerTitle.getText()).toBe('Add a new Domain');
     }
 

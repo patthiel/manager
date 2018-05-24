@@ -74,6 +74,6 @@ export default class Page {
 
     closeDrawer() {
         this.drawerClose.click();
-        this.drawerTitle.waitForVisible(5000, true);
+        this.drawerTitle.waitForVisible(10000, true);
     }
 }
