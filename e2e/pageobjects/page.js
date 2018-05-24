@@ -1,3 +1,5 @@
+const { constants } = require('../constants');
+
 export default class Page {
     get dialogTitle() { return $('[data-qa-dialog-title]'); }
     get sidebarTitle() { return $('[data-qa-sidebar-title]'); }
@@ -31,12 +33,12 @@ export default class Page {
         this.userMenu.click();
         this.logoutButton.waitForVisible();
         this.logoutButton.click();
-        this.logoutButton.waitForVisible(5000, true);
-        this.globalCreate.waitForVisible(5000, true);
+        this.logoutButton.waitForVisible(constants.wait.short, true);
+        this.globalCreate.waitForVisible(constants.wait.short, true);
 
         browser.waitUntil(function() {
             return browser.getUrl().includes('/login');
-        }, 10000, 'Failed to redirect to login page on log out');
+        }, constants.wait.normal, 'Failed to redirect to login page on log out');
     }
 
     assertDocsDisplay() {
@@ -53,7 +55,7 @@ export default class Page {
         const displayedMsg = browser.getText('[data-qa-toast-message]');
         expect(displayedMsg).toBe(expectedMessage);
         browser.click('[data-qa-toast] button');
-        browser.waitForExist('[data-qa-toast]', 5000, true);
+        browser.waitForExist('[data-qa-toast]', constants.wait.short, true);
     }
 
     dismissToast() {
@@ -64,7 +66,7 @@ export default class Page {
                 return dismissed;
             }
             return true;
-        }, 10000);
+        }, constants.wait.normal);
     }
 
     selectActionMenuItem(tableCell, item) {
@@ -74,6 +76,6 @@ export default class Page {
 
     closeDrawer() {
         this.drawerClose.click();
-        this.drawerTitle.waitForVisible(10000, true);
+        this.drawerTitle.waitForVisible(constants.wait.normal, true);
     }
 }

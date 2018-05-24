@@ -30,7 +30,7 @@ describe('Edit - Clone - Resize Volumes Suite', () => {
         LinodeDetail.changeTab('Volumes');
         
         VolumeDetail.createVolume(testVolume);
-        browser.waitForVisible('[data-qa-volume-cell]', 25000);
+        browser.waitForVisible('[data-qa-volume-cell]', constants.wait.long);
 
         testVolume['id'] = VolumeDetail.volumeCell[0].getAttribute('data-qa-volume-cell');
         volume = $(`[data-qa-volume-cell="${testVolume.id}"]`);
@@ -59,11 +59,11 @@ describe('Edit - Clone - Resize Volumes Suite', () => {
 
         VolumeDetail.size.$('input').setValue(newSize);
         VolumeDetail.submit.click();
-        VolumeDetail.drawerTitle.waitForVisible(10000, true);
+        VolumeDetail.drawerTitle.waitForVisible(constants.wait.normal, true);
         
         browser.waitUntil(function() {
             return browser.getText(`[data-qa-volume-cell="${testVolume.id}"] [data-qa-volume-size]`).includes(newSize);
-        }, 10000);
+        }, constants.wait.normal);
     });
 
     it('should clone the volume', () => {
@@ -82,6 +82,6 @@ describe('Edit - Clone - Resize Volumes Suite', () => {
         browser.trySetValue('[data-qa-clone-from] input', 'new-clone');
 
         VolumeDetail.submit.click();
-        VolumeDetail.drawerTitle.waitForVisible(10000, true);
+        VolumeDetail.drawerTitle.waitForVisible(constants.wait.normal, true);
     });
 });

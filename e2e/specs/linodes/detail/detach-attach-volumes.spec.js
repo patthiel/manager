@@ -21,7 +21,7 @@ describe('Linode - Volumes - Attach, Detach, Delete Suite', () => {
         LinodeDetail.changeTab('Volumes');
         
         VolumeDetail.createVolume(testVolume);
-        browser.waitForVisible('[data-qa-volume-cell]', 25000);
+        browser.waitForVisible('[data-qa-volume-cell]', constants.wait.long);
     });
 
     it('should display detach linode dialog', () => {
