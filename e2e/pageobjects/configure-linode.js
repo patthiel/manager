@@ -1,5 +1,7 @@
 import Page from './page';
 
+const { timestamp } = require('../utils/common');
+
 class ConfigureLinode extends Page {
     get createHeader() { return $('[data-qa-create-linode-header]'); }
     get createFromImage() { return $('[data-qa-create-from="Create from Image"]'); }

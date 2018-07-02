@@ -4,6 +4,7 @@ import {
     apiCreateLinode,
     apiDeleteAllLinodes,
     apiDeleteAllVolumes,
+    timestamp,
 } from '../../utils/common';
 import ListLinodes from '../../pageobjects/list-linodes';
 import VolumeDetail from '../../pageobjects/linode-detail/linode-detail-volume.page';
@@ -41,14 +42,14 @@ describe('Create - Volume Suite', () => {
     });
 
     it('should display a error notice on create without region', () => {
-        testVolume['label'] = `ASD${new Date().getTime()}`;
+        testVolume['label'] = timestamp();
         VolumeDetail.createVolume(testVolume, true);
         VolumeDetail.notice.waitForVisible();
         VolumeDetail.closeVolumeDrawer();
     });
 
     it('should create without attaching to a linode', () => {
-        testVolume['label'] = `ASD${new Date().getTime()}`;
+        testVolume['label'] = timestamp();
         testVolume['regionIndex'] = 0;
         
         VolumeDetail.createVolume(testVolume, true);
@@ -63,7 +64,7 @@ describe('Create - Volume Suite', () => {
     });
 
     it('should create attached to a linode', () => {
-        testVolume['label'] = `ASD${new Date().getTime()}`,
+        testVolume['label'] = timestamp();
         testVolume['attachedLinode'] = linodeLabel;
 
         VolumeDetail.createVolume(testVolume, true);

@@ -73,6 +73,7 @@ class ListDomains extends Page {
         this.createDomainName.$('input').setValue(name);
         this.createSoaEmail.$('input').setValue(email);
         this.submit.click();
+        this.drawerTitle.waitForVisible(constants.wait.normal, true);
 
         if (placeholder) {
             this.domainElem.waitForVisible();

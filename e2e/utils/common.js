@@ -13,10 +13,18 @@ import NodeBalancerDetail from '../pageobjects/nodebalancer-detail/details.page'
 
 export const timestamp = () => {
     if (argv.record || argv.replay) {
-        global.timeCount++
+        global.timeCount++;
         return `Unique${timeCount}`;
     }
     return `A${new Date().getTime()}`;
+}
+
+export const randomPass = () => {
+    if (argv.record || argv.replay) {
+        global.timeCount++;
+        return `RandomByte${timeCount}`;
+    }
+    return crypto.randomBytes(20).toString('hex');
 }
 
 export const createGenericLinode = (label) => {
@@ -39,13 +47,13 @@ export const deleteLinode = (label) => {
 
 export const createLinodeIfNone = () => {
     if (!ListLinodes.linodesDisplay()) {
-        createGenericLinode(new Date().getTime());
+        createGenericLinode(timestamp());
     }
 }
 
 export const apiCreateLinode = (linodeLabel=false) => {
     const token = readToken();
-    const newLinodePass = crypto.randomBytes(20).toString('hex');
+    const newLinodePass = randomPass();
     const linode = browser.createLinode(token, newLinodePass, linodeLabel);
 
     browser.url(constants.routes.linodes);

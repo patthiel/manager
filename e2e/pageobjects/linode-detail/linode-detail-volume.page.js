@@ -94,7 +94,7 @@ export class VolumeDetail extends Page {
         this.drawerTitle.waitForVisible();
 
         browser.trySetValue('[data-qa-volume-label] input', volume.label);
-        this.size.$('input').setValue(volume.size);
+        browser.trySetValue('[data-qa-size] input', volume.size);
 
         if (volume.hasOwnProperty('regionIndex')) {
             this.region.waitForVisible();

@@ -1,4 +1,4 @@
-const { writeFileSync } = require('fs');
+const { readFileSync, writeFileSync } = require('fs');
 const axios = require('axios');
 
 const proxyImposter = config => {
@@ -110,4 +110,20 @@ exports.deleteImposters = () => {
             .then(response => resolve(response.data))
             .catch(error => reject(console.error(error)));
     });
+}
+
+/*
+* Take API stubs and scrub away any potentially sensitive data
+* @param { String } Path to stub file
+* @returns { undefined } returns nothing
+*/
+exports.sanitizeStub = (stubPath) => {
+    const stubFile = readFileSync(stubPath, 'utf8');
+    const sanitized = stubFile
+        .replace(/(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/g, '127.0.0.1')
+        .replace(/(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/g, '2001:3f03::')
+
+        JSON.parse(sanitized);
+
+    return writeFileSync(stubPath, sanitized);
 }
