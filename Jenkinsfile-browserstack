@@ -1,0 +1,24 @@
+node {
+    def slack_chan = "#dev-manager"
+    try {
+        stage('Prepare') {
+            deleteDir()   
+        }
+
+        stage('Checkout') {
+            dir('src') {
+                checkout scm
+            }
+        }
+
+        def testRunner = docker.build('wdio-runner', "-v ${env.WORKSPACE}/src/e2e:/src/e2e .")
+
+        testRunner.inside {
+            stage('E2E Tests') {
+                withCredentials([usernamePassword(credentialsId: 'manager-test-user', usernameVariable: 'MANAGER_USER', passwordVariable: 'MANAGER_PASS')]) {
+                    sh 'yarn e2e:browserstack'
+                }
+            }
+        }
+    }
+}
