@@ -1,5 +1,4 @@
 node {
-    def slack_chan = "#dev-manager"
     try {
         stage('Prepare') {
             deleteDir()   
