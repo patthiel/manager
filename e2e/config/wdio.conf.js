@@ -174,6 +174,13 @@ exports.config = {
             imposterName: 'Linode-API',
             proxyHost: 'https://api.linode.com/v4',
             mutualAuth: true,
+        },
+        loginConfig: {
+            imposterPort: '8089',
+            imposterProtocol: 'https',
+            imposterName: 'Login',
+            proxyHost: 'https://login.linode.com',
+            mutualAuth: true,
         }
     },
     
@@ -217,6 +224,7 @@ exports.config = {
         global.timeCount = 0;
 
         if (argv.record) {
+            browser.loadProxyImposter(browser.options.mountebankConfig.loginConfig);
             browser.loadProxyImposter(browser.options.mountebankConfig.proxyConfig);
         }
 

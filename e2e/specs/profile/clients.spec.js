@@ -1,11 +1,14 @@
 const { constants } = require('../../constants');
-import { Profile, OauthCreateDrawer, dialogMap} from '../../pageobjects/profile';
+const { argv } = require('yargs');
+
+import { Profile, OauthCreateDrawer, dialogMap } from '../../pageobjects/profile';
 
 const profile = new Profile();
 const createDrawer = new OauthCreateDrawer();
 
 describe('Profile - OAuth Clients Suite', () => {
     const timestamp = new Date().getTime();
+
     const client = {
         label: `${timestamp} Test Client`,
         callback: 'https://test.com:3000',
@@ -16,6 +19,12 @@ describe('Profile - OAuth Clients Suite', () => {
         callback: 'https://test-edit.com:3000',
         access: 'Public',
     }
+
+    if (argv.record || argv.replay) {
+        client['label'] = 'Test Client';
+        editedClient['label'] = 'Editted Test Client';
+    }
+
     const editedRow = `[data-qa-table-row="${editedClient.label}"]`;
     const dialogTitle = dialogMap.title;
     const dialogContent = dialogMap.content;
